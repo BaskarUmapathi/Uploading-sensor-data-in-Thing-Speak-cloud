@@ -1,5 +1,9 @@
 # Uploading temperature sensor data in Thing Speak cloud
 
+NAME : BASKAR U
+
+REG NO : 212223220013
+
 # AIM:
 To monitor the temperature sensor data in the Thing speak using an ESP32 controller.
 
@@ -42,7 +46,7 @@ Step7 Check your ThingSpeak channel to verify that the sensor value has been upd
 
 Internet of Things (IoT) describes an emerging trend where a large number of embedded devices (things) are connected to the Internet. These connected devices communicate with people and other things and often provide sensor data to cloud storage and cloud computing resources where the data is processed and analyzed to gain important insights. Cheap cloud computing power and increased device connectivity is enabling this trend.IoT solutions are built for many vertical applications such as environmental monitoring and control, health monitoring, vehicle fleet monitoring, industrial monitoring and control, and home automation
 
-![image](https://user-images.githubusercontent.com/71547910/235334044-c01d4261-d46f-4f62-b07f-72a7b6fce5d5.png)
+![image](https://github.com/user-attachments/assets/44dc1c33-6ba9-48cc-be94-69f90c98ca7d)
 
 ### Sending Data to Cloud with ESP32 and ThingSpeak
 
@@ -50,7 +54,7 @@ ThingSpeak is an Internet of Things (IoT) analytics platform that allows users t
 
 ### What is ThingSpeak?
 
-![image](https://user-images.githubusercontent.com/71547910/235333909-29d2e831-9fe5-4afd-b18d-f1e5d2e32518.png)
+![image](https://github.com/user-attachments/assets/d5a0a75d-6dc7-47de-9b52-db7fe0b1905b)
 
 It is an open data platform for IoT (Internet of Things). ThingSpeak is a web service operated by MathWorks where we can send sensor readings/data to the cloud. We can also visualize and act on the data (calculate the data) posted by the devices to ThingSpeak. The data can be stored in either private or public channels.ThingSpeak is frequently used for internet of things prototyping and proof of concept systems that require analytics.
 
@@ -67,14 +71,76 @@ Run your IoT analytics automatically based on schedules or events. </br>
 Prototype and build IoT systems without setting up servers or developing web software.</br>
 Automatically act on your data and communicate using third-party services like Twilio® or Twitter®</br>
 
-![image](https://user-images.githubusercontent.com/71547910/235334056-3ba9579f-2f62-43b1-a714-8fde6cf9ef32.png)
-
+![image](https://github.com/user-attachments/assets/157a1fe9-cbae-4105-b567-6d31db533040)
 
 # PROGRAM:
+```c
+#include"ThingSpeak.h"
+#include <WiFi.h>
+#include "DHT.h"
+
+char ssid[]="xx";
+char pass[]="xyz";
+
+const int t=25;
+WiFiClient client;
+DHT dht(25, DHT11);
+
+unsigned long myChannelField = 2492690;
+const int ChannelField1 = 1 ; 
+const int ChannelField2 = 2 ;
+const char *myWriteAPIKey="RF8WCRR152XWWRQW";
+
+void setup()
+{
+  Serial.begin(115200);
+  pinMode (t,OUTPUT);
+  WiFi.mode(WIFI_STA);
+  ThingSpeak.begin(client);
+  dht.begin();
+  delay(1000);
+}
+
+void loop()
+{
+  if(WiFi.status()!=WL_CONNECTED)
+  {
+    Serial.print("Attempting to connet to SSID: "); 
+    Serial.println(ssid);
+    while(WiFi.status() != WL_CONNECTED)
+    {
+      WiFi.begin(ssid, pass);
+      Serial.print(".");
+      delay(5000);
+    }
+    Serial.println("\nConnected");
+  }
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+  delay(1000);
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" *C");
+  ThingSpeak.writeField(myChannelField, ChannelField1, temperature, myWriteAPIKey);
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" g.m-3");
+  ThingSpeak.writeField(myChannelField, ChannelField2, humidity, myWriteAPIKey);
+  delay(1000);
+}
+```
 
 # CIRCUIT DIAGRAM:
+![image](https://github.com/user-attachments/assets/4f899418-3370-4d5c-a93c-aa20ce57dcb0)
 
 # OUTPUT:
+## THINGSPEAK
+![image](https://github.com/user-attachments/assets/c4ecf7fe-9247-4a68-8e44-89fbdab08a86)
+
+
+## SERIAL MONITOR
+![image](https://github.com/user-attachments/assets/0f9b0b6b-85fc-42fd-8e51-b1f6fbf7de21)
+
 
 # RESULT:
 
